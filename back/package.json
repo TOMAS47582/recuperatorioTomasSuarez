@@ -1,0 +1,9 @@
+{
+  "name": "base-recuperatorio-peluqueria",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Esqueleto para completar en el recuperatorio",
+  "scripts": {
+    "start": "node src/app.js"
+  }
+}
