@@ -1,2 +1,15 @@
 // TODO: implementar el controlador de recaudación por profesional.
+const { getPool } = require("../config/db");
 
+
+const recaudacionPorProfesional = async (_req, res, next) => {
+  try {
+    const pool = await getPool();
+    const resultado = await pool.request().execute("usp_RecaudacionPorProfesional");
+    res.status(200).json(resultado.recordset);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { recaudacionPorProfesional };

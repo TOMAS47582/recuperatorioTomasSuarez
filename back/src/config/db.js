@@ -1,18 +1,38 @@
 const sql = require("mssql");
 
+
+const [servidor, instancia] = (process.env.DB_SERVER || "localhost").split("\\");
+
 const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER,
+  server: servidor,
   database: process.env.DB_DATABASE,
-  port: Number(process.env.DB_PORT || 1433),
   options: {
     encrypt: false,
     trustServerCertificate: true
   }
 };
 
-// TODO: crear y exportar la conexión/pool según la estructura trabajada en clase.
+if (instancia) {
+  config.options.instanceName = instancia;
+} else {
+  config.port = Number(process.env.DB_PORT || 1433);
+}
 
-module.exports = { sql, config };
 
+let poolPromise = null;
+
+const getPool = () => {
+  if (!poolPromise) {
+    poolPromise = new sql.ConnectionPool(config)
+      .connect()
+      .catch((error) => {
+        poolPromise = null;
+        throw error;
+      });
+  }
+  return poolPromise;
+};
+
+module.exports = { sql, config, getPool };
